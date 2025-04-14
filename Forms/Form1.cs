@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Authorization;
 
 namespace Forms
 {
@@ -17,10 +19,44 @@ namespace Forms
             InitializeComponent();
         }
 
+        // очищает ввод
         private void button1_Click(object sender, EventArgs e)
         {
             textBox1.Text = " ";
             textBox2.Text = " ";
+        }
+
+        // вход
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string fileUsers = "USERS.txt";
+            string username = "default";
+            string password = "default";
+
+            try
+            {
+                username = Convert.ToString(textBox1.Text);
+                password = Convert.ToString(textBox2.Text);
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            Authorize authorize = new Authorize(fileUsers);
+            authorize.SetUserList();
+
+            if (authorize.CheckAccount(username, password))
+            {
+                var Form2 = new Form2(this);
+                Form2.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Error! Incorrect password or username!");
+            }
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
@@ -65,23 +101,6 @@ namespace Forms
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
 
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //тут проверка на правильность логина и ввода которая возвращзает true
-            int n = 1;
-            if(n==1)
-            {
-                var Form2 = new Form2(this);
-                Form2.Show();
-                this.Hide();
-            }
-            else
-            {
-                textBox1.Text = "Error";
-                textBox2.Text = "Error";
-            }
         }
     }
 }

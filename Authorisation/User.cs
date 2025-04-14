@@ -38,6 +38,18 @@ namespace Authorization
         {
             entries.Add(entry);
         }
+
+        public bool CheckAccount(string username, string password)
+        {
+            if (username == name && password == this.password)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
 }

@@ -88,5 +88,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Authorisation\LibAuthorization.csproj">
+      <Project>{138b7d1a-a38a-4b70-841d-ea4fca4929a7}</Project>
+      <Name>LibAuthorization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClassLibrary\LibMenu.csproj">
+      <Project>{2782e8f9-f9ac-4a2a-84d3-bf76a5199690}</Project>
+      <Name>LibMenu</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

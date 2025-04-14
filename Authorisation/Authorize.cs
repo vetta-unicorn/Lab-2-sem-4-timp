@@ -32,19 +32,29 @@ namespace Authorization
                 {
                     string name = fileHandler.GetUsername(line);
                     string password = fileHandler.GetPassword(line);
-                    User user = new User(name, password);
-                    AddUser(user);
+                    AddUser(new User(name, password));
                 }
                 else
                 {
-                    //string entry_name = fileHandler.GetEntryName(line);
-                    //int status = fileHandler.GetAccessStatus(line);
-                    (string, int) tuple = fileHandler.GetEntryAndStatus(line);
-                    string entry = tuple.Item1;
-                    int status = tuple.Item2;
-                    users.Last().AddEntry(new Entry(entry, status));
+                    (string, int) EntryAndStatus = fileHandler.GetEntryAndStatus(line);
+                    users.Last().AddEntry(new Entry(EntryAndStatus.Item1, EntryAndStatus.Item2));
                 }
             }
+        }
+
+        public bool CheckAccount(string username, string password)
+        {
+            bool Flag = false;
+            foreach(User user in users)
+            {
+                if (user.CheckAccount(username, password))
+                {
+                    Flag = true;
+                    break;
+                }
+            }
+
+            return Flag;
         }
     }
 }

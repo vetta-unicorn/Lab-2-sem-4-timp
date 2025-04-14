@@ -18,6 +18,7 @@ namespace Authorization
         public string[] GetFiles()
         {
             string[] lines = { "" };
+            lines = File.ReadAllLines(filePath);
             try
             {
                 lines = File.ReadAllLines(filePath);
