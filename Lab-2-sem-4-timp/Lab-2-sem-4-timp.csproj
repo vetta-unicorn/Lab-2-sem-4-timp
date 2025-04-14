@@ -9,7 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
+    <ProjectReference Include="..\Authorisation\LibAuthorization.csproj" />
+    <ProjectReference Include="..\ClassLibrary\LibMenu.csproj" />
     <ProjectReference Include="..\Forms\Forms.csproj" />
   </ItemGroup>
 

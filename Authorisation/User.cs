@@ -1,0 +1,43 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Authorization
+{
+    public class Entry
+    {
+        private string name { get; set; }
+        private int status { get; set; }
+        public Entry(string name, int status)
+        {
+            this.name = name;
+            this.status = status;
+        }
+    }
+
+    public class User
+    {
+        private string name { get; set; }
+        private string password { get; set; }
+        private List<Entry> entries { get; set; }
+
+        public User(string name, string password)
+        {
+            this.name = name;
+            this.password = password;
+            entries = new List<Entry>();
+        }
+        public User()
+        {
+            entries = new List<Entry>();
+        }
+
+        public void AddEntry(Entry entry)
+        {
+            entries.Add(entry);
+        }
+    }
+
+}

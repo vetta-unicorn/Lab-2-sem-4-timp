@@ -11,7 +11,7 @@ namespace ClassLibrary
         private List<Tree> menu;
         private ProcessFile fileHandler;
 
-        public Menu(string filePath)
+        public Menu (string filePath)
         {
             menu = new List<Tree>();
             fileHandler = new ProcessFile(filePath);
