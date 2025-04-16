@@ -49,7 +49,8 @@ namespace Forms
 
             if (authorize.CheckAccount(username, password))
             {
-                var Form2 = new Form2(this);
+                //var Form2 = new MenuForm(this);
+                var Form2 = new MenuForm();
                 Form2.Show();
                 this.Hide();
             }

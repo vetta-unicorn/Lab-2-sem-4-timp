@@ -17,6 +17,8 @@ namespace ClassLibrary
             fileHandler = new ProcessFile(filePath);
         }
 
+        public List<Tree> GetMenu() { return menu; }
+
         public int FindLastRoot(int level)
         {
             int len = menu.Count;
