@@ -187,10 +187,7 @@ namespace Forms
             // Например, можно использовать Reflection для вызова метода
         }
 
-        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
     }
 }
   
