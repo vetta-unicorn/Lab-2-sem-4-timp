@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Authorization;
 using ClassLibrary;
 
 namespace Forms.Presenters
@@ -13,14 +14,20 @@ namespace Forms.Presenters
         private readonly IMenuView _view;
         private readonly ClassLibrary.Menu _menu;
         private string filePath;
+        private string fileAllUsers;
+        private readonly Authorize _authorize;
 
         public MenuPresenter(IMenuView view)
         {
             filePath = "Menu.txt";
+            fileAllUsers = "USERS.txt";
 
             _view = view;
             _menu = new ClassLibrary.Menu(filePath); // Укажите путь к файлу
-            _menu.SetMenu(); // Заполнение меню
+            _menu.SetMenu();
+            _authorize = new Authorize(fileAllUsers);
+            _authorize.SetUserList();
+
             _view.DisplayMenu(_menu);
         }
 

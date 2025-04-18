@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Authorization
 {
     public class Authorize
@@ -57,6 +58,32 @@ namespace Authorization
             }
 
             return Flag;
+        }
+
+        public int GetAccessLevel(string entryName, User FileUser)
+        {
+
+            User currUser = new User();
+
+            foreach (User user in users)
+            {
+                if (user.GetName() == FileUser.GetName())
+                {
+                    currUser = user;
+                }
+            }
+
+            if (currUser != null && currUser.GetEntries() != null && currUser.GetEntries().Count() > 0)
+            {
+                foreach (var entry in currUser.GetEntries())
+                {
+                    if (entry.GetName() == entryName)
+                    {
+                        return entry.GetStatus();
+                    }
+                }
+            }
+            return -1;
         }
     }
 }

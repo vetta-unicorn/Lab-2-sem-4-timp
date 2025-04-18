@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.Json;
+using System.Runtime.Remoting.Lifetime;
 
 namespace Forms
 {
@@ -24,31 +25,22 @@ namespace Forms
         private int buttonMargin = 10;
 
         private string fileUser = "User.json";
+        private string fileAllUsers = "USERS.txt";
+
         public MenuForm()
         {
             InitializeComponent();
             _presenter = new MenuPresenter(this);
         }
 
-        //public int IsAccessed(Authorize authorize, string entryName)
-        //{
-        //    var jsonString = File.ReadAllText(fileUser);
-        //    var userData = JsonSerializer.Deserialize<UserData>(jsonString);
-        //    User currUser = new User();
-
-        //    foreach (User user in authorize.GetUsers())
-        //    {
-        //        if (user.GetName() == userData.username)
-        //        {
-        //            currUser = user;
-        //        }
-        //    }
-
-        //    foreach (var entry in currUser.GetEntries())
-        //    {
-
-        //    }
-        //}
+        public int GetAccesFileLevel(string entryName)
+        {
+            var jsonString = File.ReadAllText(fileUser);
+            var userData = JsonSerializer.Deserialize<User>(jsonString);
+            Authorize authorize = new Authorize(fileAllUsers);
+            authorize.SetUserList();
+            return authorize.GetAccessLevel(entryName, userData);
+        }
 
         public Button FindButton(Tree tree)
         {
@@ -102,6 +94,7 @@ namespace Forms
                 {
                     if (child != null)
                     {
+                        int status = GetAccesFileLevel(child.root.GetName());
                         var childButton = new Button
                         {
                             Text = child.root.GetName(),
@@ -109,6 +102,7 @@ namespace Forms
                             AutoSize = true
                         };
                         childButton.Click += Button_Click;
+                        SetButtonStatus(childButton, status);
                         subPanel.Controls.Add(childButton);
                     }
                 }
@@ -133,6 +127,7 @@ namespace Forms
             {
                 if (tree != null)
                 {
+                    int status = GetAccesFileLevel(tree.root.GetName());
                     var button = new Button
                     {
                         Text = tree.root.GetName(),
@@ -140,12 +135,32 @@ namespace Forms
                         AutoSize = true
                     };
                     button.Click += Button_Click;
+                    SetButtonStatus(button, status);
                     
                     if (tree.root.GetLevel() == 0)
                     {
                         flowLayoutPanel1.Controls.Add(button);
                     }
                 }
+            }
+        }
+
+        public void SetButtonStatus(Button button, int status)
+        {
+            switch (status)
+            {
+                case 0:
+                    button.Visible = true;
+                    button.Enabled = true;
+                    break;
+                case 1:
+                    button.Visible = true;
+                    button.Enabled = false;
+                    break;
+                case 2:
+                    button.Visible = false;
+                    button.Enabled = false;
+                    break;
             }
         }
 

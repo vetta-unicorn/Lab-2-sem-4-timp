@@ -54,10 +54,12 @@ namespace Forms
 
             if (authorize.CheckAccount(username, password))
             {
-                UserData userData = new UserData(username, password);
+                User user = new User(username, password);
 
-                var jsonString = JsonSerializer.Serialize(userData);
+                var jsonString = JsonSerializer.Serialize(new User(user.GetName(), user.GetPassword()));
                 File.WriteAllText(fileCurrentUser, jsonString);
+
+                var person = JsonSerializer.Deserialize<User>(jsonString);
 
                 var Form2 = new MenuForm();
                 Form2.Show();
@@ -69,16 +71,6 @@ namespace Forms
                 MessageBox.Show("Error! Incorrect password or username!");
             }
         }
-    }
 
-    public class UserData
-    {
-        public string username { get; set; }
-        public string password { get; set; }
-        public UserData(string username, string password)
-        {
-            this.username = username;
-            this.password = password;
-        }
     }
 }
