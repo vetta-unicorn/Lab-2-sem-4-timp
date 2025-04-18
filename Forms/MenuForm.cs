@@ -186,6 +186,11 @@ namespace Forms
             // Реализуйте логику вызова метода по имени
             // Например, можно использовать Reflection для вызова метода
         }
+
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
   
