@@ -8,10 +8,25 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Authorization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
 
 namespace Forms
 {
+    public class UserData
+    {
+        public string username { get; set; }
+        public string password {  get; set; }
+        public UserData(string username, string password)
+        {
+            this.username = username;
+            this.password = password;
+        }
+    }
+
     public partial class Form1 : Form
     {
         public Form1()
@@ -31,6 +46,7 @@ namespace Forms
         private void button2_Click(object sender, EventArgs e)
         {
             string fileUsers = "USERS.txt";
+            string fileCurrentUser = "User.json";
             string username = "default";
             string password = "default";
 
@@ -49,11 +65,16 @@ namespace Forms
 
             if (authorize.CheckAccount(username, password))
             {
-                //var Form2 = new MenuForm(this);
+                UserData userData = new UserData(username, password);
+
+                var jsonString = JsonSerializer.Serialize(userData);
+                File.WriteAllText(fileCurrentUser, jsonString);
+
                 var Form2 = new MenuForm();
                 Form2.Show();
                 this.Hide();
             }
+
             else
             {
                 MessageBox.Show("Error! Incorrect password or username!");

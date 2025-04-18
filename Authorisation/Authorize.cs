@@ -42,6 +42,8 @@ namespace Authorization
             }
         }
 
+        public List<User> GetUsers() {  return users; }
+
         public bool CheckAccount(string username, string password)
         {
             bool Flag = false;

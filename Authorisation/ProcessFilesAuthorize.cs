@@ -56,13 +56,6 @@ namespace Authorization
             return password;
         }
 
-        //public string GetEntryName(string line)
-        //{
-        //    string[] parts = SplitStrings(line);
-        //    string entry = parts[0];
-        //    return entry;
-        //}
-
         public (string, int) GetEntryAndStatus(string line)
         {
             string[] parts = SplitStrings(line);
@@ -92,18 +85,5 @@ namespace Authorization
 
             return (entry, status);
         }
-
-        //public int GetAccessStatus(string line)
-        //{
-        //    string[] parts = SplitStrings(line);
-        //    int status = 0;
-
-        //    if (parts.Length > 1)
-        //    {
-        //        status = Convert.ToInt32(parts[1]);
-        //    }
-
-        //    return status;
-        //}
     }
 }

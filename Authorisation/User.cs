@@ -34,6 +34,9 @@ namespace Authorization
             entries = new List<Entry>();
         }
 
+        public List<Entry> GetEntries() { return entries; }
+        public string GetName() { return name; }
+
         public void AddEntry(Entry entry)
         {
             entries.Add(entry);

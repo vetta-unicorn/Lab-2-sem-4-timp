@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using ClassLibrary;
 
 namespace Forms.Presenters
@@ -10,19 +11,41 @@ namespace Forms.Presenters
     public class MenuPresenter
     {
         private readonly IMenuView _view;
-        private readonly Menu _menu;
+        private readonly ClassLibrary.Menu _menu;
+        private string filePath;
 
-        public MenuPresenter(IMenuView view, Menu menu)
+        public MenuPresenter(IMenuView view)
         {
+            filePath = "Menu.txt";
+
             _view = view;
-            _menu = menu;
+            _menu = new ClassLibrary.Menu(filePath); // Укажите путь к файлу
+            _menu.SetMenu(); // Заполнение меню
+            _view.DisplayMenu(_menu);
         }
 
-        public void LoadMenu(string filePath)
+        public void OnMenuItemClicked(Tree tree)
         {
-            _menu.SetMenu();
-            _view.DisplayMenu(_menu.GetMenu());
+            if (tree.children != null && tree.children.Count > 0)
+            {
+                _view.DisplayChildren(tree);
+            }
+            else
+            {
+                // Вызов метода с именем clickName
+                InvokeClickMethod(tree.root.GetClickName());
+            }
+        }
+
+
+        private void InvokeClickMethod(string methodName)
+        {
+            // Здесь можно использовать рефлексию или другой подход для вызова метода по имени
+            // Например, если методы находятся в этом же классе:
+            //var method = this.GetType().GetMethod(methodName);
+            //method?.Invoke(this, null);
         }
     }
+
 
 }

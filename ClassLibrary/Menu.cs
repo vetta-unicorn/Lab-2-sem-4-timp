@@ -19,6 +19,24 @@ namespace ClassLibrary
 
         public List<Tree> GetMenu() { return menu; }
 
+        public Tree FindParent(Tree child_tree)
+        {
+            for (int i = 0; i < menu.Count; i++) 
+            {
+                if (menu[i] == child_tree)
+                {
+                    for (int j = i; j <= 0; j--)
+                    {
+                        if (child_tree.root.GetLevel() == (menu[j].root.GetLevel() - 1))
+                        {
+                            return menu[j];
+                        }
+                    }
+                }
+            }
+            return new Tree();
+        }
+
         public int FindLastRoot(int level)
         {
             int len = menu.Count;
