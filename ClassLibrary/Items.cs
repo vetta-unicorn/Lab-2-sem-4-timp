@@ -25,6 +25,11 @@ namespace ClassLibrary
         public int GetLevel() {  return level; }
         public string GetName() { return name; }
         public string GetClickName() { return clickName; }
+
+        public string CallClickName()
+        {
+            return $"{clickName}";
+        }
     }
 
 }

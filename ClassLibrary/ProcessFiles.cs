@@ -47,8 +47,26 @@ namespace ClassLibrary
         public string GetPointName(string line)
         {
             string[] parts = SplitStrings(line);
-            string name = parts[1];
-            return name;
+            string entry = "";
+            for (int i = 0; i < parts.Length; i++)
+            {
+                char[] chars = parts[i].ToCharArray();
+
+                if (Letters.IsCyrillic(chars[0]))
+                {
+                    entry += parts[i];
+                    if (i < parts.Length - 1)
+                    {
+                        char[] nextChars = parts[i + 1].ToCharArray();
+                        if (Letters.IsCyrillic(nextChars[0]))
+                        {
+                            entry += " ";
+                        }
+                    }
+                }
+            }
+
+            return entry;
         }
 
         public string GetMethodName(string line)
@@ -61,6 +79,19 @@ namespace ClassLibrary
                 methName = parts[3];
             }
             return methName;
+        }
+    }
+
+    public static class Letters
+    {
+        public static bool IsLatin(char c)
+        {
+            return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
+        }
+
+        public static bool IsCyrillic(char c)
+        {
+            return (c >= 'А' && c <= 'Я') || (c >= 'а' && c <= 'я');
         }
     }
 }

@@ -196,13 +196,20 @@ namespace Forms
 
         }
 
-        private void InvokeMethod(string methodName)
+        public void InvokeMethod(string methodName)
         {
-            // Реализуйте логику вызова метода по имени
-            // Например, можно использовать Reflection для вызова метода
+            ClassLibrary.Menu menu = new ClassLibrary.Menu(fileAllUsers);
+            menu.SetMenu();
+            var listTree = menu.GetMenu();
+
+            foreach (Tree tree in listTree)
+            {
+                if (methodName == tree.root.GetClickName())
+                {
+                    MessageBox.Show($"You have successfully called {methodName}!");
+                }
+            }
         }
-
-
     }
 }
   

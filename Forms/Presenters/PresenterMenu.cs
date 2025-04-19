@@ -31,27 +31,24 @@ namespace Forms.Presenters
             _view.DisplayMenu(_menu);
         }
 
-        public void OnMenuItemClicked(Tree tree)
-        {
-            if (tree.children != null && tree.children.Count > 0)
-            {
-                _view.DisplayChildren(tree);
-            }
-            else
-            {
-                // Вызов метода с именем clickName
-                InvokeClickMethod(tree.root.GetClickName());
-            }
-        }
+        //public void OnMenuItemClicked(Tree tree)
+        //{
+        //    if (tree.children != null && tree.children.Count > 0)
+        //    {
+        //        _view.DisplayChildren(tree);
+        //    }
+        //    else
+        //    {
+        //        // Вызов метода с именем clickName
+        //        InvokeClickMethod(tree.root.GetClickName());
+        //    }
+        //}
 
 
-        private void InvokeClickMethod(string methodName)
-        {
-            // Здесь можно использовать рефлексию или другой подход для вызова метода по имени
-            // Например, если методы находятся в этом же классе:
-            //var method = this.GetType().GetMethod(methodName);
-            //method?.Invoke(this, null);
-        }
+        //private void InvokeClickMethod(string methodName)
+        //{
+        //    _view.InvokeMethod(methodName);
+        //}
     }
 
 
