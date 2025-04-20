@@ -74,10 +74,16 @@ namespace ClassLibrary
             string[] parts = SplitStrings(line);
             string methName = "";
 
-            if (parts.Length > 3)
+            for (int i = 0; i < parts.Length; i++)
             {
-                methName = parts[3];
+                char[] chars = parts[i].ToCharArray();
+
+                if (Letters.IsLatin(chars[0]))
+                {
+                    methName = parts[i];
+                }
             }
+
             return methName;
         }
     }

@@ -7,29 +7,29 @@ using System.Windows.Forms;
 using Authorization;
 using ClassLibrary;
 
-namespace Forms.Presenters
-{
-    public class MenuPresenter
-    {
-        private readonly IMenuView _view;
-        private readonly ClassLibrary.Menu _menu;
-        private string filePath;
-        private string fileAllUsers;
-        private readonly Authorize _authorize;
+//namespace Forms.Presenters
+//{
+    //public class MenuPresenter
+    //{
+    //    private readonly IMenuView _view;
+    //    private readonly ClassLibrary.Menu _menu;
+    //    private string filePath;
+    //    private string fileAllUsers;
+    //    private readonly Authorize _authorize;
 
-        public MenuPresenter(IMenuView view)
-        {
-            filePath = "Menu.txt";
-            fileAllUsers = "USERS.txt";
+    //    public MenuPresenter(IMenuView view)
+    //    {
+    //        filePath = "Menu.txt";
+    //        fileAllUsers = "USERS.txt";
 
-            _view = view;
-            _menu = new ClassLibrary.Menu(filePath); // Укажите путь к файлу
-            _menu.SetMenu();
-            _authorize = new Authorize(fileAllUsers);
-            _authorize.SetUserList();
+    //        _view = view;
+    //        _menu = new ClassLibrary.Menu(filePath); // Укажите путь к файлу
+    //        _menu.SetMenu();
+    //        _authorize = new Authorize(fileAllUsers);
+    //        _authorize.SetUserList();
 
-            _view.DisplayMenu(_menu);
-        }
+    //        _view.DisplayMenu(_menu);
+    //    }
 
         //public void OnMenuItemClicked(Tree tree)
         //{
@@ -49,7 +49,8 @@ namespace Forms.Presenters
         //{
         //    _view.InvokeMethod(methodName);
         //}
-    }
+//    }
 
 
-}
+//}
+//

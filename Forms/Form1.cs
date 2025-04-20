@@ -59,7 +59,6 @@ namespace Forms
                 var jsonString = JsonSerializer.Serialize(new User(user.GetName(), user.GetPassword()));
                 File.WriteAllText(fileCurrentUser, jsonString);
 
-                var person = JsonSerializer.Deserialize<User>(jsonString);
 
                 var Form2 = new MenuForm();
                 Form2.Show();
