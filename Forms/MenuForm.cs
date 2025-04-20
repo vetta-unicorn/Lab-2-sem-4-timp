@@ -14,13 +14,17 @@ using System.IO;
 using System.Text.Json;
 using System.Runtime.Remoting.Lifetime;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Forms
 {
     public partial class MenuForm : Form
     {
         private ClassLibrary.Menu menu;
+        private Authorize authorize;
         private string filePath = "Menu.txt";
+        private string allUsersPath = "USERS.txt";
+        private string currUserPath = "User.json";
 
         private delegate void PrintDelegate(string message);
 
@@ -28,15 +32,43 @@ namespace Forms
         {
             InitializeComponent();
             menu = new ClassLibrary.Menu(filePath);
-            menu.SetMenu(); // Заполнение меню
-            InitializeMenuStrip(menu.GetMenu());
+            menu.SetMenu();
+            authorize = new Authorize(allUsersPath);
+            authorize.SetUserList();
+
+            InitializeMenuStrip(menu.menu);
+        }
+
+        public void SetStatus(ToolStripMenuItem menuItem, Tree tree)
+        {
+            string jsonString = File.ReadAllText(currUserPath);
+            User currUser = JsonSerializer.Deserialize<User>(jsonString);
+            int status = authorize.GetAccessLevel(tree.root.name, currUser);
+            switch (status)
+            {
+                case 0:
+                    menuItem.Visible = true;
+                    menuItem.Enabled = true;
+                    break;
+                case 1:
+                    menuItem.Visible = true;
+                    menuItem.Enabled = false;
+                    break;
+                case 2:
+                    menuItem.Visible = false;
+                    menuItem.Enabled = false;
+                    break;
+                case -1:
+                    MessageBox.Show("Unable to set entry status!");
+                    break;
+            }
         }
 
         private void InitializeMenuStrip(List<Tree> trees)
         {
             foreach (var tree in trees)
             {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(tree.root.GetName());
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(tree.root.name);
                 PrintDelegate printMethod;
 
                 if (tree.children == null || tree.children.Count() == 0)
@@ -52,7 +84,8 @@ namespace Forms
                     printMethod = (message) => { };
                 }
 
-                menuItem.Click += (sender, e) => printMethod(tree.root.GetClickName());
+                menuItem.Click += (sender, e) => printMethod(tree.root.clickName);
+                SetStatus(menuItem, tree);
 
                 if (tree.children != null && tree.children.Count > 0)
                 {
@@ -67,14 +100,14 @@ namespace Forms
         {
             foreach (var child in children)
             {
-                ToolStripMenuItem childMenuItem = new ToolStripMenuItem(child.root.GetName());
+                ToolStripMenuItem childMenuItem = new ToolStripMenuItem(child.root.name);
 
                 PrintDelegate printMethod;
                 if (child.children == null || child.children.Count() == 0)
                 {
                     printMethod = (message) =>
                     {
-                        MessageBox.Show($"You have calles method: {message}");
+                        MessageBox.Show($"You have called method: {message}");
                     };
                 }
 
@@ -83,7 +116,8 @@ namespace Forms
                     printMethod = (message) => { };
                 }
 
-                childMenuItem.Click += (sender, e) =>printMethod(child.root.GetClickName());
+                childMenuItem.Click += (sender, e) =>printMethod(child.root.clickName);
+                SetStatus(childMenuItem, child);
 
                 if (child.children != null && child.children.Count > 0)
                 {
@@ -94,19 +128,11 @@ namespace Forms
             }
         }
 
-        //private void HandleMenuItemClick(Item item)
-        //{
-        //    // Если у элемента нет подменю, вызываем метод clickName
-        //    if (item.GetClickName() != "")
-        //    {
-
-        //    }
-        //}
-
-        // Пример метода, который может быть вызван
-        public void ExampleMethod()
+        private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Example method invoked!");
+            var form1 = new Form1();
+            form1.Show();
+            this.Hide();
         }
     }
 

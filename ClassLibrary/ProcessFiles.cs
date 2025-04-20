@@ -10,7 +10,7 @@ namespace ClassLibrary
     // библиотека работы с файлами
     public class ProcessFile
     {
-        private string filePath {  get; set; }
+        private string filePath;
 
         public ProcessFile(string filePath)
         {

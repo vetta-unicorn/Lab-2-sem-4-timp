@@ -9,11 +9,8 @@ namespace ClassLibrary
 {
     public class Tree
     {
-        private Item _root;
-        private List<Tree> _children;
-
-        public Item root { get { return _root; } set { _root = value; } }
-        public List<Tree> children { get { return _children; } set { _children = value; } }
+        public Item root { get; private set; }
+        public List<Tree> children { get; private set; }
 
         public Tree (Item root)
         {

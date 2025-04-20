@@ -9,7 +9,7 @@ namespace Authorization
 {
     public class ProcessFileAutho
     {
-        private string filePath {  get; set; }
+        private string filePath;
         public ProcessFileAutho(string filePath)
         {
             this.filePath = filePath;

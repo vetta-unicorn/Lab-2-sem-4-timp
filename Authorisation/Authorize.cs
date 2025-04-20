@@ -9,8 +9,8 @@ namespace Authorization
 {
     public class Authorize
     {
-        private ProcessFileAutho fileHandler { get; set; }
-        private List<User> users { get; set; }
+        private ProcessFileAutho fileHandler;
+        public List<User> users { get; private set; }
 
         public Authorize(string filePath)
         {
@@ -43,8 +43,6 @@ namespace Authorization
             }
         }
 
-        public List<User> GetUsers() {  return users; }
-
         public bool CheckAccount(string username, string password)
         {
             bool Flag = false;
@@ -62,24 +60,23 @@ namespace Authorization
 
         public int GetAccessLevel(string entryName, User FileUser)
         {
-
             User currUser = new User();
 
             foreach (User user in users)
             {
-                if (user.GetName() == FileUser.GetName())
+                if (user.name == FileUser.name)
                 {
                     currUser = user;
                 }
             }
 
-            if (currUser != null && currUser.GetEntries() != null && currUser.GetEntries().Count() > 0)
+            if (currUser != null && currUser.entries != null && currUser.entries.Count() > 0)
             {
-                foreach (var entry in currUser.GetEntries())
+                foreach (var entry in currUser.entries)
                 {
-                    if (entry.GetName() == entryName)
+                    if (entry.name == entryName)
                     {
-                        return entry.GetStatus();
+                        return entry.status;
                     }
                 }
             }

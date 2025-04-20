@@ -8,15 +8,13 @@ namespace Authorization
 {
     public class Entry
     {
-        private string name { get; set; }
-        private int status { get; set; }
+        public string name { get; private set; }
+        public int status { get; private set; }
         public Entry(string name, int status)
         {
             this.name = name;
             this.status = status;
         }
-        public string GetName() { return name; }
-        public int GetStatus() { return status; }
     }
 
     [Serializable]
@@ -24,7 +22,7 @@ namespace Authorization
     {
         public string name { get; set; }
         public string password { get; set; }
-        private List<Entry> entries { get; set; }
+        public List<Entry> entries { get; private set; }
 
         public User(string name, string password)
         {
@@ -36,10 +34,6 @@ namespace Authorization
         {
             entries = new List<Entry>();
         }
-
-        public List<Entry> GetEntries() { return entries; }
-        public string GetName() { return name; }
-        public string GetPassword() {  return password; }
 
         public void AddEntry(Entry entry)
         {

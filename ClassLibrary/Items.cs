@@ -9,9 +9,9 @@ namespace ClassLibrary
 {
     public class Item
     {
-        private int level;
-        private string name;
-        private string clickName;
+        public int level { get; private set; }
+        public string name { get; private set; }
+        public string clickName { get; private set; }
 
         public Item(int lev, string n, string _clickName)
         {
@@ -21,15 +21,6 @@ namespace ClassLibrary
         }
 
         public Item() { }
-
-        public int GetLevel() {  return level; }
-        public string GetName() { return name; }
-        public string GetClickName() { return clickName; }
-
-        public string CallClickName()
-        {
-            return $"{clickName}";
-        }
     }
 
 }

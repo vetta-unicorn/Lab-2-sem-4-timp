@@ -8,16 +8,14 @@ namespace ClassLibrary
 {
     public class Menu
     {
-        private List<Tree> menu;
-        private ProcessFile fileHandler;
+        public List<Tree> menu { get; private set; }
+        public ProcessFile fileHandler { get; private set; }
 
         public Menu (string filePath)
         {
             menu = new List<Tree>();
             fileHandler = new ProcessFile(filePath);
         }
-
-        public List<Tree> GetMenu() { return menu; }
 
         public Tree FindParent(Tree child_tree)
         {
@@ -27,7 +25,7 @@ namespace ClassLibrary
                 {
                     for (int j = i; j <= 0; j--)
                     {
-                        if (child_tree.root.GetLevel() == (menu[j].root.GetLevel() - 1))
+                        if (child_tree.root.level == (menu[j].root.level - 1))
                         {
                             return menu[j];
                         }
@@ -42,7 +40,7 @@ namespace ClassLibrary
             int len = menu.Count;
             for (int i = len - 1; i >= 0; i--)
             {
-                if (menu[i].root.GetLevel() == (level - 1))
+                if (menu[i].root.level == (level - 1))
                 {
                     return i;
                 }
@@ -71,12 +69,12 @@ namespace ClassLibrary
                     menu.Add(tree);
                 }
 
-                else if (prev.GetLevel() < level)
+                else if (prev.level < level)
                 {
                     menu.Last().addChild(tree);
                 }
 
-                else if (prev.GetLevel() == level && level != 0)
+                else if (prev.level == level && level != 0)
                 {
                     try
                     {

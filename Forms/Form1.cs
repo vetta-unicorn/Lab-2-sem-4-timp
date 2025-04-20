@@ -56,7 +56,7 @@ namespace Forms
             {
                 User user = new User(username, password);
 
-                var jsonString = JsonSerializer.Serialize(new User(user.GetName(), user.GetPassword()));
+                var jsonString = JsonSerializer.Serialize(new User(user.name, user.password));
                 File.WriteAllText(fileCurrentUser, jsonString);
 
 
