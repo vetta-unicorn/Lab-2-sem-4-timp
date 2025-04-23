@@ -16,6 +16,7 @@ namespace Authorization
         {
             fileHandler = new ProcessFileAutho(filePath);
             users = new List<User>();
+            SetUserList();
         }
 
         public void AddUser(User user)

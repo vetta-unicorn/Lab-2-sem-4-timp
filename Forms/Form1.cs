@@ -9,18 +9,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using Authorization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
+using System.Reflection;
+
 
 namespace Forms
 {
     public partial class Form1 : Form
     {
+        Assembly assembly;
+        Type authorizeType;
+        Type userType;
         public Form1()
         {
             InitializeComponent();
+
+            assembly = Assembly.LoadFrom("Authorisation.dll");
+            authorizeType = assembly.GetType("Authorization.Authorize");
+
+            userType = assembly.GetType("Authorization.User");
         }
 
         // очищает ввод
@@ -49,14 +58,26 @@ namespace Forms
                 MessageBox.Show(ex.Message);
             }
 
-            Authorize authorize = new Authorize(fileUsers);
-            authorize.SetUserList();
+            // Создаем экземпляр класса, передавая аргумент в конструктор
+            var authorizeInstance = Activator.CreateInstance(authorizeType, fileUsers);
 
-            if (authorize.CheckAccount(username, password))
+            // Вызываем метод MyMethod с помощью Reflection
+            MethodInfo SetUserList = authorizeType.GetMethod("SetUserList");
+            SetUserList.Invoke(authorizeInstance, null); // Вызов метода
+
+            //Authorize authorize = new Authorize(fileUsers);
+            //authorize.SetUserList();
+
+            MethodInfo CheckAccount = authorizeType.GetMethod("CheckAccount");
+            object[] parameters = new object[] { username, password };
+            bool Flag = Convert.ToBoolean(CheckAccount.Invoke(authorizeInstance, parameters));
+
+            if (Flag)
             {
-                User user = new User(username, password);
+                var userInstance = Activator.CreateInstance(userType, username, password);
+                //User user = new User(username, password);
 
-                var jsonString = JsonSerializer.Serialize(new User(user.name, user.password));
+                var jsonString = JsonSerializer.Serialize(userInstance);
                 File.WriteAllText(fileCurrentUser, jsonString);
 
 

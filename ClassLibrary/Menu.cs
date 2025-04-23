@@ -15,6 +15,7 @@ namespace ClassLibrary
         {
             menu = new List<Tree>();
             fileHandler = new ProcessFile(filePath);
+            SetMenu();
         }
 
         public Tree FindParent(Tree child_tree)

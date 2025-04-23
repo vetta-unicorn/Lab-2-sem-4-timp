@@ -1,6 +1,4 @@
-﻿using Authorization;
-using ClassLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,13 +12,20 @@ using System.Text.Json;
 using System.Runtime.Remoting.Lifetime;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Collections;
 
 namespace Forms
 {
     public partial class MenuForm : Form
     {
-        private ClassLibrary.Menu menu;
-        private Authorize authorize;
+        Assembly assemblyAuthorize;
+        Assembly assemblyMenu;
+        Type authorizeType;
+        Type userType;
+        Type menuType;
+        Type treeType;
+        Type listType;
+
         private string filePath = "Menu.txt";
         private string allUsersPath = "USERS.txt";
         private string currUserPath = "User.json";
@@ -30,19 +35,52 @@ namespace Forms
         public MenuForm()
         {
             InitializeComponent();
-            menu = new ClassLibrary.Menu(filePath);
-            menu.SetMenu();
-            authorize = new Authorize(allUsersPath);
-            authorize.SetUserList();
 
-            InitializeMenuStrip(menu.menu);
+            assemblyAuthorize = Assembly.LoadFrom("Authorisation.dll");
+            authorizeType = assemblyAuthorize.GetType("Authorization.Authorize");
+            var authorizeInstance = Activator.CreateInstance(authorizeType, allUsersPath);
+            //MethodInfo SetUserList = authorizeType.GetMethod("SetUserList");
+            //SetUserList.Invoke(authorizeInstance, null);
+
+            userType = assemblyAuthorize.GetType("Authorization.User");
+
+            assemblyMenu = Assembly.LoadFrom("ClassLibrary.dll");
+
+            treeType = assemblyMenu.GetType("ClassLibrary.Tree");
+            listType = typeof(List<>).MakeGenericType(treeType);
+            var treeInstance = Activator.CreateInstance(treeType);
+
+            menuType = assemblyMenu.GetType("ClassLibrary.Menu");
+            var menuInstance = Activator.CreateInstance(menuType, filePath);
+            //MethodInfo SetMenu = menuType.GetMethod("SetMenu");
+            //SetMenu.Invoke(menuInstance, null);
+
+            var menuValue = menuType.GetProperty("menu", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic).GetValue(menuInstance);
+            var menuList = Convert.ChangeType(menuValue, listType);
+
+            InitializeMenuStrip(menuList);
         }
 
-        public void SetStatus(ToolStripMenuItem menuItem, Tree tree)
+        public void SetStatus(ToolStripMenuItem menuItem, object treeInstance)
         {
             string jsonString = File.ReadAllText(currUserPath);
-            User currUser = JsonSerializer.Deserialize<User>(jsonString);
-            int status = authorize.GetAccessLevel(tree.root.name, currUser);
+            Type userType = assemblyAuthorize.GetType("Authorization.User");
+            var currUser = JsonSerializer.Deserialize(jsonString, userType);
+
+            var authorizeInstance = Activator.CreateInstance(authorizeType, allUsersPath);
+
+            // Получаем доступ к свойству root у treeInstance
+            PropertyInfo rootProperty = treeInstance.GetType().GetProperty("root");
+            var root = rootProperty.GetValue(treeInstance);
+
+            // Получаем доступ к имени корня
+            PropertyInfo nameProperty = root.GetType().GetProperty("name");
+            string treeName = (string)nameProperty.GetValue(root);
+
+            // Получаем доступ к методу GetAccessLevel
+            MethodInfo getAccessLevelMethod = authorizeType.GetMethod("GetAccessLevel");
+            int status = (int)getAccessLevelMethod.Invoke(authorizeInstance, new object[] { treeName, currUser });
+
             switch (status)
             {
                 case 0:
@@ -63,64 +101,105 @@ namespace Forms
             }
         }
 
-        private void InitializeMenuStrip(List<Tree> trees)
+        private void InitializeMenuStrip(object treesInstance)
         {
+            // Получаем доступ к свойству menu у treesInstance
+            menuType = assemblyMenu.GetType("ClassLibrary.Menu");
+            var menuInstance = Activator.CreateInstance(menuType, filePath);
+
+            PropertyInfo menuProperty = menuInstance.GetType().GetProperty("menu");
+            var trees = (IList)menuProperty.GetValue(menuInstance);
+
             foreach (var tree in trees)
             {
-                ToolStripMenuItem menuItem = new ToolStripMenuItem(tree.root.name);
-                PrintDelegate printMethod;
+                var thisTree = tree.GetType().GetProperty("root").GetValue(tree);
+                // Предполагаем, что thisTree является экземпляром класса Item
+                Type itemType = thisTree.GetType();
 
-                if (tree.children == null || tree.children.Count() == 0)
-                {
-                    printMethod = (message) =>
-                    {
-                        MessageBox.Show($"You have calles method: {message}");
-                    };
-                }
+                // Получаем поле 'name' (если это поле)
+                //FieldInfo nameField = itemType.GetField("name", BindingFlags.Public | BindingFlags.Instance);
+                //string treeName = nameField != null ? (string)nameField.GetValue(thisTree) : null;
 
-                else
-                {
-                    printMethod = (message) => { };
-                }
+                // Или, если 'name' является свойством
+                PropertyInfo nameProperty = itemType.GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
+                string treeName = nameProperty != null ? (string)nameProperty.GetValue(thisTree) : null;
 
-                menuItem.Click += (sender, e) => printMethod(tree.root.clickName);
-                SetStatus(menuItem, tree);
+                // Теперь Вы можете использовать treeName для создания ToolStripMenuItem
+                ToolStripMenuItem menuItem = new ToolStripMenuItem(treeName);
 
-                if (tree.children != null && tree.children.Count > 0)
-                {
-                    InitializeSubMenu(menuItem, tree.children);
-                }
-
-                menuStrip1.Items.Add(menuItem);
-            }
-        }
-
-        private void InitializeSubMenu(ToolStripMenuItem parentMenuItem, List<Tree> children)
-        {
-            foreach (var child in children)
-            {
-                ToolStripMenuItem childMenuItem = new ToolStripMenuItem(child.root.name);
+                //ToolStripMenuItem menuItem = new ToolStripMenuItem(treeName);
 
                 PrintDelegate printMethod;
-                if (child.children == null || child.children.Count() == 0)
+
+                // Проверяем наличие дочерних элементов
+                PropertyInfo childrenProperty = tree.GetType().GetProperty("children");
+                var children = (IList)childrenProperty.GetValue(tree);
+
+                if (children == null || children.Count == 0)
                 {
                     printMethod = (message) =>
                     {
                         MessageBox.Show($"You have called method: {message}");
                     };
                 }
-
                 else
                 {
                     printMethod = (message) => { };
                 }
 
-                childMenuItem.Click += (sender, e) =>printMethod(child.root.clickName);
+                // Получаем доступ к методу clickName
+                //string clickName = (string)tree.GetType().GetProperty("root").GetValue(tree).GetType().GetProperty("clickName").GetValue(tree);
+                PropertyInfo clickProperty = itemType.GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
+                string clickName = nameProperty != null ? (string)nameProperty.GetValue(thisTree) : null;
+                menuItem.Click += (sender, e) => printMethod(clickName);
+                SetStatus(menuItem, tree);
+
+                if (children != null && children.Count > 0)
+                {
+                    InitializeSubMenu(menuItem, children);
+                }
+
+                menuStrip1.Items.Add(menuItem);
+            }
+        }
+        private void InitializeSubMenu(ToolStripMenuItem parentMenuItem, object childrenItems)
+        {
+            var children = Convert.ChangeType(childrenItems, listType);
+
+            foreach (var child in children as IList)
+            {
+                // Извлекаем имя из свойства root
+                var rootProperty = child.GetType().GetProperty("root");
+                var rootInstance = rootProperty.GetValue(child);
+                string childName = (string)rootInstance.GetType().GetProperty("name").GetValue(rootInstance);
+
+                ToolStripMenuItem childMenuItem = new ToolStripMenuItem(childName);
+
+                PrintDelegate printMethod;
+                // Проверяем наличие детей у текущего узла
+                var childChildrenProperty = child.GetType().GetProperty("children");
+                var childChildren = (IList)childChildrenProperty.GetValue(child);
+
+                if (childChildren == null || childChildren.Count == 0)
+                {
+                    printMethod = (message) =>
+                    {
+                        MessageBox.Show($"You have called method: {message}");
+                    };
+                }
+                else
+                {
+                    printMethod = (message) => { };
+                }
+
+                string clickName = (string)rootInstance.GetType().GetProperty("clickName").GetValue(rootInstance);
+                childMenuItem.Click += (sender, e) => printMethod(clickName);
                 SetStatus(childMenuItem, child);
 
-                if (child.children != null && child.children.Count > 0)
+                // Проверка на наличие дочерних элементов
+                if (childChildren != null && childChildren.Count > 0)
                 {
-                    InitializeSubMenu(childMenuItem, child.children);
+                    InitializeSubMenu(childMenuItem, childChildren);
                 }
 
                 parentMenuItem.DropDownItems.Add(childMenuItem);
