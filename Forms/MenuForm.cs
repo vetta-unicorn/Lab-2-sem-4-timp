@@ -21,8 +21,8 @@ namespace Forms
     {
         private ClassLibrary.Menu menu;
         private Authorize authorize;
-        private string filePath = "Menu.txt";
-        private string allUsersPath = "USERS.txt";
+        private string filePath = "MenuNew.txt";
+        private string allUsersPath = "USERSNew.txt";
         private string currUserPath = "User.json";
 
         private delegate void PrintDelegate(string message);
@@ -31,9 +31,7 @@ namespace Forms
         {
             InitializeComponent();
             menu = new ClassLibrary.Menu(filePath);
-            menu.SetMenu();
             authorize = new Authorize(allUsersPath);
-            authorize.SetUserList();
 
             InitializeMenuStrip(menu.menu);
         }

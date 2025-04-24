@@ -34,7 +34,7 @@ namespace Forms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string fileUsers = "USERS.txt";
+            string fileUsers = "USERSNew.txt";
             string fileCurrentUser = "User.json";
             string username = "default";
             string password = "default";
