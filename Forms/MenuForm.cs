@@ -39,8 +39,6 @@ namespace Forms
             assemblyAuthorize = Assembly.LoadFrom("Authorisation.dll");
             authorizeType = assemblyAuthorize.GetType("Authorization.Authorize");
             var authorizeInstance = Activator.CreateInstance(authorizeType, allUsersPath);
-            //MethodInfo SetUserList = authorizeType.GetMethod("SetUserList");
-            //SetUserList.Invoke(authorizeInstance, null);
 
             userType = assemblyAuthorize.GetType("Authorization.User");
 
@@ -52,8 +50,6 @@ namespace Forms
 
             menuType = assemblyMenu.GetType("ClassLibrary.Menu");
             var menuInstance = Activator.CreateInstance(menuType, filePath);
-            //MethodInfo SetMenu = menuType.GetMethod("SetMenu");
-            //SetMenu.Invoke(menuInstance, null);
 
             var menuValue = menuType.GetProperty("menu", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic).GetValue(menuInstance);
             var menuList = Convert.ChangeType(menuValue, listType);
@@ -116,18 +112,12 @@ namespace Forms
                 // Предполагаем, что thisTree является экземпляром класса Item
                 Type itemType = thisTree.GetType();
 
-                // Получаем поле 'name' (если это поле)
-                //FieldInfo nameField = itemType.GetField("name", BindingFlags.Public | BindingFlags.Instance);
-                //string treeName = nameField != null ? (string)nameField.GetValue(thisTree) : null;
-
                 // Или, если 'name' является свойством
                 PropertyInfo nameProperty = itemType.GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
                 string treeName = nameProperty != null ? (string)nameProperty.GetValue(thisTree) : null;
 
                 // Теперь Вы можете использовать treeName для создания ToolStripMenuItem
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(treeName);
-
-                //ToolStripMenuItem menuItem = new ToolStripMenuItem(treeName);
 
                 PrintDelegate printMethod;
 
@@ -148,7 +138,7 @@ namespace Forms
                 }
 
                 // Получаем доступ к методу clickName
-                //string clickName = (string)tree.GetType().GetProperty("root").GetValue(tree).GetType().GetProperty("clickName").GetValue(tree);
+               
                 PropertyInfo clickProperty = itemType.GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
                 string clickName = nameProperty != null ? (string)nameProperty.GetValue(thisTree) : null;
                 menuItem.Click += (sender, e) => printMethod(clickName);
