@@ -58,15 +58,10 @@ namespace Forms
                 MessageBox.Show(ex.Message);
             }
 
-            // Создаем экземпляр класса, передавая аргумент в конструктор
             var authorizeInstance = Activator.CreateInstance(authorizeType, fileUsers);
 
-            // Вызываем метод MyMethod с помощью Reflection
             MethodInfo SetUserList = authorizeType.GetMethod("SetUserList");
-            SetUserList.Invoke(authorizeInstance, null); // Вызов метода
-
-            //Authorize authorize = new Authorize(fileUsers);
-            //authorize.SetUserList();
+            SetUserList.Invoke(authorizeInstance, null); 
 
             MethodInfo CheckAccount = authorizeType.GetMethod("CheckAccount");
             object[] parameters = new object[] { username, password };
@@ -75,11 +70,9 @@ namespace Forms
             if (Flag)
             {
                 var userInstance = Activator.CreateInstance(userType, username, password);
-                //User user = new User(username, password);
 
                 var jsonString = JsonSerializer.Serialize(userInstance);
                 File.WriteAllText(fileCurrentUser, jsonString);
-
 
                 var Form2 = new MenuForm();
                 Form2.Show();

@@ -65,15 +65,12 @@ namespace Forms
 
             var authorizeInstance = Activator.CreateInstance(authorizeType, allUsersPath);
 
-            // Получаем доступ к свойству root у treeInstance
             PropertyInfo rootProperty = treeInstance.GetType().GetProperty("root");
             var root = rootProperty.GetValue(treeInstance);
 
-            // Получаем доступ к имени корня
             PropertyInfo nameProperty = root.GetType().GetProperty("name");
             string treeName = (string)nameProperty.GetValue(root);
 
-            // Получаем доступ к методу GetAccessLevel
             MethodInfo getAccessLevelMethod = authorizeType.GetMethod("GetAccessLevel");
             int status = (int)getAccessLevelMethod.Invoke(authorizeInstance, new object[] { treeName, currUser });
 
@@ -99,7 +96,6 @@ namespace Forms
 
         private void InitializeMenuStrip(object treesInstance)
         {
-            // Получаем доступ к свойству menu у treesInstance
             menuType = assemblyMenu.GetType("ClassLibrary.Menu");
             var menuInstance = Activator.CreateInstance(menuType, filePath);
 
@@ -109,19 +105,15 @@ namespace Forms
             foreach (var tree in trees)
             {
                 var thisTree = tree.GetType().GetProperty("root").GetValue(tree);
-                // Предполагаем, что thisTree является экземпляром класса Item
                 Type itemType = thisTree.GetType();
 
-                // Или, если 'name' является свойством
                 PropertyInfo nameProperty = itemType.GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
                 string treeName = nameProperty != null ? (string)nameProperty.GetValue(thisTree) : null;
 
-                // Теперь Вы можете использовать treeName для создания ToolStripMenuItem
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(treeName);
 
                 PrintDelegate printMethod;
 
-                // Проверяем наличие дочерних элементов
                 PropertyInfo childrenProperty = tree.GetType().GetProperty("children");
                 var children = (IList)childrenProperty.GetValue(tree);
 
@@ -136,8 +128,6 @@ namespace Forms
                 {
                     printMethod = (message) => { };
                 }
-
-                // Получаем доступ к методу clickName
                
                 PropertyInfo clickProperty = itemType.GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
                 string clickName = nameProperty != null ? (string)nameProperty.GetValue(thisTree) : null;
@@ -158,7 +148,6 @@ namespace Forms
 
             foreach (var child in children as IList)
             {
-                // Извлекаем имя из свойства root
                 var rootProperty = child.GetType().GetProperty("root");
                 var rootInstance = rootProperty.GetValue(child);
                 string childName = (string)rootInstance.GetType().GetProperty("name").GetValue(rootInstance);
@@ -166,7 +155,6 @@ namespace Forms
                 ToolStripMenuItem childMenuItem = new ToolStripMenuItem(childName);
 
                 PrintDelegate printMethod;
-                // Проверяем наличие детей у текущего узла
                 var childChildrenProperty = child.GetType().GetProperty("children");
                 var childChildren = (IList)childChildrenProperty.GetValue(child);
 
@@ -186,7 +174,6 @@ namespace Forms
                 childMenuItem.Click += (sender, e) => printMethod(clickName);
                 SetStatus(childMenuItem, child);
 
-                // Проверка на наличие дочерних элементов
                 if (childChildren != null && childChildren.Count > 0)
                 {
                     InitializeSubMenu(childMenuItem, childChildren);
@@ -196,6 +183,7 @@ namespace Forms
             }
         }
 
+        // назад
         private void button1_Click(object sender, EventArgs e)
         {
             var form1 = new Form1();
